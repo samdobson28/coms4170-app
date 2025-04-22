@@ -12,13 +12,24 @@ A Flask-based web application that helps users learn about Mexican food culture,
 
 - **Interactive Quiz**
 
-  - Multiple question types (image matching, translation, true/false, multiple choice)
-  - Progress tracking
-  - Detailed results and feedback
+  - Multiple question types:
+    - Image matching: Match food images to their names
+    - Translation: Practice essential Spanish phrases
+    - True/False: Test your knowledge of Mexican food facts
+    - Multiple Choice: Choose the correct answer from options
+    - Multiple Select: Select all correct answers
+  - Progress tracking with visual indicators
+  - Detailed results showing:
+    - Overall score and percentage
+    - Individual question results
+    - Correct answers for missed questions
+  - Support for skipping questions
+  - Ability to review and retry the quiz
 
 - **Personal Guidebook**
   - Save favorite foods, phrases, and locations
   - Access saved items anytime
+  - Organize saved items by category
 
 ## Tech Stack
 
@@ -134,6 +145,33 @@ Contains structured data for the culture and language guides:
 - `id`: Primary key
 - `page`: Page visited
 - `timestamp`: When the page was visited
+
+### `saved_items` Table
+
+- `id`: Primary key
+- `item_type`: Type of saved item (food, phrase, or place)
+- `item_id`: Identifier of the saved item
+- `timestamp`: When the item was saved
+
+### Quiz Results Structure
+
+```json
+{
+    "score": 5,
+    "total": 7,
+    "results": [
+        {
+            "question_number": 1,
+            "question": "Question text",
+            "user_answer": "User's answer",
+            "correct_answer": "Correct answer",
+            "is_correct": true,
+            "type": "question_type"
+        },
+        ...
+    ]
+}
+```
 
 ## Development
 

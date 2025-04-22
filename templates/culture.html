@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% block title %}Culture Guide - Mexican Food in NYC{% endblock %}
+
+{% block extra_css %}
+<style>
+.food-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    padding: 2rem;
+}
+
+.food-card {
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.2s;
+}
+
+.food-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.food-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    cursor: pointer;
+}
+
+.food-card .card-body {
+    padding: 1.5rem;
+}
+
+.food-card h3 {
+    margin-bottom: 1rem;
+    color: #2c3e50;
+}
+
+.food-card .btn {
+    margin-right: 0.5rem;
+}
+
+.modal-content {
+    border-radius: 8px;
+}
+
+.modal-body img {
+    width: 100%;
+    max-height: 400px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="culture-section text-center mb-5">
+        <h1>Mexican Food Culture</h1>
+        <p class="lead">Explore the rich culinary traditions of Mexico</p>
+    </div>
+
+    <div class="food-grid">
+        {% for food in foods %}
+        <div class="food-card">
+            <img src="{{ url_for('static', filename=food.image) }}" 
+                 alt="{{ food.name }}"
+                 data-toggle="modal" 
+                 data-target="#foodModal{{ food.id }}">
+            <div class="card-body">
+                <h3>{{ food.name }}</h3>
+                <div class="d-flex justify-content-between">
+                    <button class="btn btn-primary" data-toggle="modal" data-target="#foodModal{{ food.id }}">
+                        View Details
+                    </button>
+                    <button class="btn btn-outline-primary save-food" data-food-id="{{ food.id }}">
+                        Save to Guidebook
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Food Modal -->
+        <div class="modal fade" id="foodModal{{ food.id }}" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{{ food.name }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <img src="{{ url_for('static', filename=food.image) }}" 
+                             alt="{{ food.name }}">
+                        <p>{{ food.description }}</p>
+                        {% if food.origin %}
+                        <p><strong>Origin:</strong> {{ food.origin }}</p>
+                        {% endif %}
+                        {% if food.ingredients %}
+                        <p><strong>Key Ingredients:</strong> {{ food.ingredients }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Initialize all modals
+document.querySelectorAll('[data-toggle="modal"]').forEach(button => {
+    button.addEventListener('click', function() {
+        const target = this.dataset.target;
+        const modal = document.querySelector(target);
+        if (modal) {
+            new bootstrap.Modal(modal).show();
+        }
+    });
+});
+
+document.querySelectorAll('.save-food').forEach(button => {
+    button.addEventListener('click', function() {
+        const foodId = this.dataset.foodId;
+        fetch('/save_item', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                type: 'food',
+                id: foodId
+            })
+        }).then(() => {
+            this.textContent = 'Saved!';
+            this.disabled = true;
+        });
+    });
+});
+</script>
+{% endblock %} 
+</html> 

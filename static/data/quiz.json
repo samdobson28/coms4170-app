@@ -1,0 +1,59 @@
+{
+    "questions": [
+        {
+            "id": "q1",
+            "type": "image_match",
+            "question": "Match the labels to the correct images:",
+            "images": ["chile-relleno", "conchas", "chicharrones", "mole", "aguas-frescas", "pozole"],
+            "correct_matches": {
+                "chile-relleno": "Chile Relleno",
+                "conchas": "Conchas",
+                "chicharrones": "Chicharrones",
+                "mole": "Mole (de pollo)",
+                "aguas-frescas": "Aguas Frescas",
+                "pozole": "Pozole"
+            }
+        },
+        {
+            "id": "q2",
+            "type": "translation",
+            "question": "Translate: Excuse me?",
+            "correct_answer": "¿Disculpe?",
+            "hint": "Don't directly translate word by word… use the phrases from the Language page."
+        },
+        {
+            "id": "q3",
+            "type": "translation",
+            "question": "Translate: Take care!",
+            "correct_answer": "Se cuida!",
+            "hint": "Don't directly translate word by word… use the phrases from the Language page."
+        },
+        {
+            "id": "q4",
+            "type": "true_false",
+            "question": "Mole can be red, yellow, and green.",
+            "correct_answer": true
+        },
+        {
+            "id": "q5",
+            "type": "multiple_choice",
+            "question": "Which one is not a common agua fresca?",
+            "options": ["Tamarindo", "Jamaica", "Espejismo", "Horchata"],
+            "correct_answer": 2
+        },
+        {
+            "id": "q6",
+            "type": "multiple_select",
+            "question": "Which two are not a typical pozole topping?",
+            "options": ["lettuce or cabbage", "chili peppers", "tomato", "onion", "corn", "radishes", "avocado"],
+            "correct_answers": [2, 4]
+        },
+        {
+            "id": "q7",
+            "type": "multiple_choice",
+            "question": "What chile is typically used for chile relleno?",
+            "options": ["Jalapeño", "Serrano", "Poblano", "Guajillo"],
+            "correct_answer": 2
+        }
+    ]
+} 

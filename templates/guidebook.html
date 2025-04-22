@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}My Guidebook - Mexican Food in NYC{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h1 class="mb-4">Your Mexican Food Guidebook</h1>
+
+    <!-- Useful Phrases -->
+    <section class="mb-5">
+        <h2><i class="bi bi-translate"></i> Useful Phrases</h2>
+        <div class="list-group">
+            {% for phrase in phrases %}
+            <div class="list-group-item">
+                <strong>{{ phrase.spanish }}</strong> - {{ phrase.english }}
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Must-Try Foods -->
+    <section class="mb-5">
+        <h2><i class="bi bi-egg-fried"></i> Must-Try Foods</h2>
+        <div class="row">
+            {% for food in foods %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <img src="{{ url_for('static', filename=food.image) }}" class="card-img-top" alt="{{ food.name }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ food.name }}</h5>
+                        <p class="card-text">{{ food.description[:200] }}...</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Places to Visit -->
+    <section class="mb-5">
+        <h2><i class="bi bi-geo-alt"></i> Places to Visit</h2>
+        <div class="list-group">
+            {% for place in places %}
+            <div class="list-group-item">
+                <h5>{{ place.name }}</h5>
+                <p class="mb-1">{{ place.description }}</p>
+                <small class="text-muted">
+                    <i class="bi bi-geo-alt"></i> {{ place.address }} |
+                    <i class="bi bi-tag"></i> {{ place.price_range }}
+                </small>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Download Button -->
+    <div class="text-center mt-4">
+        <a href="#" class="btn btn-primary" onclick="window.print()">
+            <i class="bi bi-download"></i> Download as PDF
+        </a>
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,318 @@
+{% extends "base.html" %}
+
+{% block title %}Quiz - Mexican Food in NYC{% endblock %}
+
+{% block extra_css %}
+<style>
+.progress-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 2rem;
+}
+
+.progress-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: #dee2e6;
+    transition: background-color 0.3s;
+}
+
+.progress-dot.current {
+    background-color: #007bff;
+}
+
+.progress-dot.answered {
+    background-color: #28a745;
+}
+
+.image-match-container {
+    text-align: center;
+    margin: 2rem 0;
+}
+
+.image-match-container img {
+    max-width: 100%;
+    max-height: 300px;
+    object-fit: contain;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.quiz-navigation {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2rem;
+}
+
+.quiz-navigation button {
+    min-width: 100px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="quiz-section text-center mb-5">
+        <h1>Test Your Knowledge</h1>
+        <p class="lead">How well do you know Mexican food?</p>
+    </div>
+
+    <div class="progress-container">
+        {% for i in range(1, total_questions + 1) %}
+        <div class="progress-dot {% if i == current_question %}current{% endif %}"></div>
+        {% endfor %}
+    </div>
+
+    <div class="quiz-content">
+        <div class="question-container">
+            <h3 class="question-text mb-4"></h3>
+            <div class="answer-container"></div>
+        </div>
+
+        <div class="quiz-navigation">
+            <button class="btn btn-secondary" id="prevBtn" disabled>Previous</button>
+            <button class="btn btn-primary" id="nextBtn">Next</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const quizData = {{ quiz_data.questions|tojson|safe }};
+let currentQuestion = {{ current_question }};
+let answers = {};
+
+function showQuestion(questionNumber) {
+    const question = quizData[questionNumber - 1];
+    const questionContainer = document.querySelector('.question-container');
+    const answerContainer = document.querySelector('.answer-container');
+    
+    // Update progress dots
+    document.querySelectorAll('.progress-dot').forEach((dot, index) => {
+        dot.classList.remove('current', 'answered');
+        if (index + 1 === questionNumber) {
+            dot.classList.add('current');
+        } else if (answers[index + 1]) {
+            dot.classList.add('answered');
+        }
+    });
+
+    // Update question text
+    questionContainer.querySelector('.question-text').textContent = question.question;
+
+    // Clear previous answers
+    answerContainer.innerHTML = '';
+
+    // Handle different question types
+    if (question.type === 'image_match') {
+        const imageContainer = document.createElement('div');
+        imageContainer.className = 'image-match-container';
+        
+        // Create a grid for images and dropdowns
+        const grid = document.createElement('div');
+        grid.className = 'row';
+        
+        question.images.forEach((image, index) => {
+            const col = document.createElement('div');
+            col.className = 'col-md-4 mb-4';
+            
+            const img = document.createElement('img');
+            img.src = "{{ url_for('static', filename='images/') }}" + image + '.jpg';
+            img.alt = `Image ${index + 1}`;
+            img.className = 'img-fluid mb-2';
+            col.appendChild(img);
+            
+            const select = document.createElement('select');
+            select.className = 'form-control';
+            select.id = `answer-${index}`;
+            
+            const defaultOption = document.createElement('option');
+            defaultOption.value = '';
+            defaultOption.textContent = 'Select an answer';
+            select.appendChild(defaultOption);
+            
+            Object.values(question.correct_matches).forEach(option => {
+                const optionElement = document.createElement('option');
+                optionElement.value = option;
+                optionElement.textContent = option;
+                select.appendChild(optionElement);
+            });
+            
+            if (answers[questionNumber] && answers[questionNumber][index]) {
+                select.value = answers[questionNumber][index];
+            }
+            
+            select.addEventListener('change', () => {
+                if (!answers[questionNumber]) {
+                    answers[questionNumber] = {};
+                }
+                answers[questionNumber][index] = select.value;
+                document.querySelector('.progress-dot.current').classList.add('answered');
+            });
+            
+            col.appendChild(select);
+            grid.appendChild(col);
+        });
+        
+        imageContainer.appendChild(grid);
+        answerContainer.appendChild(imageContainer);
+    } else if (question.type === 'multiple_choice') {
+        question.options.forEach(option => {
+            const div = document.createElement('div');
+            div.className = 'form-check mb-2';
+            
+            const input = document.createElement('input');
+            input.type = 'radio';
+            input.className = 'form-check-input';
+            input.name = 'answer';
+            input.value = option;
+            input.id = `option-${option}`;
+            
+            if (answers[questionNumber] === option) {
+                input.checked = true;
+            }
+            
+            const label = document.createElement('label');
+            label.className = 'form-check-label';
+            label.htmlFor = `option-${option}`;
+            label.textContent = option;
+            
+            div.appendChild(input);
+            div.appendChild(label);
+            answerContainer.appendChild(div);
+            
+            input.addEventListener('change', () => {
+                answers[questionNumber] = option;
+                document.querySelector('.progress-dot.current').classList.add('answered');
+            });
+        });
+    } else if (question.type === 'true_false') {
+        const div = document.createElement('div');
+        div.className = 'btn-group';
+        
+        ['True', 'False'].forEach(option => {
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.className = `btn ${answers[questionNumber] === option ? 'btn-primary' : 'btn-outline-primary'}`;
+            button.textContent = option;
+            
+            button.addEventListener('click', () => {
+                div.querySelectorAll('.btn').forEach(btn => {
+                    btn.classList.remove('btn-primary');
+                    btn.classList.add('btn-outline-primary');
+                });
+                button.classList.remove('btn-outline-primary');
+                button.classList.add('btn-primary');
+                answers[questionNumber] = option;
+                document.querySelector('.progress-dot.current').classList.add('answered');
+            });
+            
+            div.appendChild(button);
+        });
+        
+        answerContainer.appendChild(div);
+    } else if (question.type === 'translation') {
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.className = 'form-control';
+        input.id = 'answer';
+        input.placeholder = 'Type your answer here';
+        
+        if (answers[questionNumber]) {
+            input.value = answers[questionNumber];
+        }
+        
+        input.addEventListener('input', () => {
+            answers[questionNumber] = input.value;
+            document.querySelector('.progress-dot.current').classList.add('answered');
+        });
+        
+        answerContainer.appendChild(input);
+    } else if (question.type === 'multiple_select') {
+        question.options.forEach((option, index) => {
+            const div = document.createElement('div');
+            div.className = 'form-check mb-2';
+            
+            const input = document.createElement('input');
+            input.type = 'checkbox';
+            input.className = 'form-check-input';
+            input.name = 'answer';
+            input.value = index;
+            input.id = `option-${index}`;
+            
+            if (answers[questionNumber] && answers[questionNumber].includes(index)) {
+                input.checked = true;
+            }
+            
+            const label = document.createElement('label');
+            label.className = 'form-check-label';
+            label.htmlFor = `option-${index}`;
+            label.textContent = option;
+            
+            div.appendChild(input);
+            div.appendChild(label);
+            answerContainer.appendChild(div);
+            
+            input.addEventListener('change', () => {
+                if (!answers[questionNumber]) {
+                    answers[questionNumber] = [];
+                }
+                if (input.checked) {
+                    answers[questionNumber].push(index);
+                } else {
+                    answers[questionNumber] = answers[questionNumber].filter(i => i !== index);
+                }
+                document.querySelector('.progress-dot.current').classList.add('answered');
+            });
+        });
+    }
+
+    // Update navigation buttons
+    document.getElementById('prevBtn').disabled = questionNumber === 1;
+    document.getElementById('nextBtn').textContent = questionNumber === quizData.length ? 'Finish' : 'Next';
+}
+
+// Navigation
+document.getElementById('prevBtn').addEventListener('click', () => {
+    if (currentQuestion > 1) {
+        currentQuestion--;
+        showQuestion(currentQuestion);
+    }
+});
+
+document.getElementById('nextBtn').addEventListener('click', () => {
+    if (currentQuestion < quizData.length) {
+        currentQuestion++;
+        showQuestion(currentQuestion);
+    } else {
+        // Submit answers
+        const finalAnswers = {};
+        for (let i = 1; i <= quizData.length; i++) {
+            finalAnswers[i] = answers[i] || null; // Mark skipped questions as null
+        }
+        
+        fetch('/submit_quiz', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(finalAnswers)
+        }).then(response => response.json())
+          .then(data => {
+              // Show results
+              alert(`Your score: ${data.score}/${quizData.length}`);
+              window.location.href = '/';
+          });
+    }
+});
+
+// Initialize first question
+document.addEventListener('DOMContentLoaded', () => {
+    showQuestion(currentQuestion);
+});
+</script>
+{% endblock %} 

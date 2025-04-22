@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Language - Mexican Food in NYC{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="page-title">Must know phrases:</h2>
+    <div class="list-group">
+        {% for phrase in phrases %}
+        <div class="list-group-item d-flex justify-content-between align-items-center">
+            <div>
+                <strong>{{ phrase.spanish }}</strong> - {{ phrase.english }}
+                <br>
+                <small class="text-muted">Pronunciation: {{ phrase.pronunciation }}</small>
+            </div>
+            <button class="btn btn-outline-primary save-phrase" data-phrase-id="{{ phrase.spanish }}">
+                <i class="bi bi-bookmark"></i> Save
+            </button>
+        </div>
+        {% endfor %}
+    </div>
+    <p class="mt-4">You don't have to be fluent, but restaurants/grocers may appreciate it if you show manners in their language.</p>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.querySelectorAll('.save-phrase').forEach(button => {
+    button.addEventListener('click', function() {
+        const phraseId = this.dataset.phraseId;
+        fetch('/save_item', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                type: 'phrase',
+                id: phraseId
+            })
+        }).then(() => {
+            this.innerHTML = '<i class="bi bi-check"></i> Saved!';
+            this.disabled = true;
+        });
+    });
+});
+</script>
+{% endblock %} 

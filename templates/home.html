@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Mexican Food in NYC{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+    <h1>Mexican Food in NYC</h1>
+    <p>Discover authentic Mexican cuisine in New York City</p>
+</div>
+
+<div class="features-section">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="feature-card">
+                <h3>Interactive Map</h3>
+                <p>Explore Mexican restaurants, bakeries, and grocery stores across NYC boroughs.</p>
+                <a href="{{ url_for('learn', section='map') }}" class="btn btn-primary">View Map</a>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card">
+                <h3>Cultural Guide</h3>
+                <p>Learn about Mexican food culture, traditions, and regional specialties.</p>
+                <a href="{{ url_for('learn', section='culture') }}" class="btn btn-primary">Learn More</a>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card">
+                <h3>Language Guide</h3>
+                <p>Essential Spanish phrases for ordering and understanding Mexican menus.</p>
+                <a href="{{ url_for('learn', section='language') }}" class="btn btn-primary">Start Learning</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="featured-section">
+    <h2>Featured Locations</h2>
+    <div class="row">
+        {% for place in featured_places %}
+        <div class="col-md-4">
+            <div class="featured-card">
+                <h4>{{ place.name }}</h4>
+                <p>{{ place.description }}</p>
+                <p><strong>Location:</strong> {{ place.neighborhood }}</p>
+                <p><strong>Type:</strong> {{ place.type }}</p>
+                <button class="btn btn-outline-primary save-place" data-place-id="{{ place.id }}">Save to Guidebook</button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.querySelectorAll('.save-place').forEach(button => {
+    button.addEventListener('click', function() {
+        const placeId = this.dataset.placeId;
+        fetch('/save_item', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                type: 'place',
+                id: placeId
+            })
+        }).then(() => {
+            this.textContent = 'Saved!';
+            this.disabled = true;
+        });
+    });
+});
+</script>
+{% endblock %} 

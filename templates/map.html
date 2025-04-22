@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block title %}Map - Mexican Food in NYC{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+{% endblock %}
+
+{% block content %}
+<div class="row mt-4">
+    <div class="col-md-3">
+        <div class="filter-section">
+            <h4>Filter by Type</h4>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="panaderia" id="panaderiaFilter" checked>
+                <label class="form-check-label" for="panaderiaFilter">Panaderias</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="fine-dining" id="fineDiningFilter" checked>
+                <label class="form-check-label" for="fineDiningFilter">Fine Dining</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="taqueria" id="taqueriaFilter" checked>
+                <label class="form-check-label" for="taqueriaFilter">Taquerias</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="grocery" id="groceryFilter" checked>
+                <label class="form-check-label" for="groceryFilter">Groceries</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="other" id="otherFilter" checked>
+                <label class="form-check-label" for="otherFilter">Other</label>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-9">
+        <div id="map" style="height: 600px;"></div>
+    </div>
+</div>
+
+<!-- Place Details Modal -->
+<div class="modal fade" id="placeModal" tabindex="-1" aria-labelledby="placeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="placeModalLabel">Place Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h3 id="modalTitle"></h3>
+                <p id="modalDescription"></p>
+                <h5>Services</h5>
+                <p id="modalServices"></p>
+                <h5>Dining Options</h5>
+                <p id="modalDining"></p>
+                <h5>Address</h5>
+                <p id="modalAddress"></p>
+                <h5>Price Range</h5>
+                <p id="modalPrice"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="saveToGuidebook">Save to Guidebook</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<script>
+    // Initialize map centered on NYC
+    var map = L.map('map').setView([40.7128, -74.0060], 12);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Function to show place details in modal
+    function showPlaceDetails(place) {
+        document.getElementById('modalTitle').textContent = place.name;
+        document.getElementById('modalDescription').textContent = place.description;
+        document.getElementById('modalServices').textContent = place.services.join(', ');
+        document.getElementById('modalDining').textContent = place.diningOptions.join(', ');
+        document.getElementById('modalAddress').textContent = place.address;
+        document.getElementById('modalPrice').textContent = place.priceRange;
+        
+        var modal = new bootstrap.Modal(document.getElementById('placeModal'));
+        modal.show();
+    }
+
+    // Function to update markers based on filters
+    function updateMarkers() {
+        // Implementation for updating markers based on selected filters
+    }
+
+    // Add event listeners to filters
+    document.querySelectorAll('.form-check-input').forEach(filter => {
+        filter.addEventListener('change', updateMarkers);
+    });
+</script>
+{% endblock %} 

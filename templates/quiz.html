@@ -303,9 +303,12 @@ document.getElementById('nextBtn').addEventListener('click', () => {
             body: JSON.stringify(finalAnswers)
         }).then(response => response.json())
           .then(data => {
-              // Show results
-              alert(`Your score: ${data.score}/${quizData.length}`);
-              window.location.href = '/';
+              // Redirect to results page with score
+              window.location.href = `/quiz/results?score=${data.score}&total=${quizData.length}`;
+          })
+          .catch(error => {
+              console.error('Error submitting quiz:', error);
+              alert('There was an error submitting your quiz. Please try again.');
           });
     }
 });

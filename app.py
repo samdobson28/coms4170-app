@@ -88,7 +88,7 @@ def learn(section):
     if section == 'culture':
         return render_template('culture.html', foods=foods)
     elif section == 'language':
-        return render_template('language.html')
+        return render_template('language.html', phrases=phrases)
     elif section == 'map':
         return render_template('map.html', places=places)
     else:
@@ -195,6 +195,12 @@ def guidebook():
                          foods=saved_foods,
                          phrases=saved_phrases,
                          places=saved_places)
+
+@app.route('/quiz/results')
+def quiz_results():
+    score = request.args.get('score', 0)
+    total = request.args.get('total', 0)
+    return render_template('quiz_results.html', score=score, total=total)
 
 @app.errorhandler(404)
 def page_not_found(e):

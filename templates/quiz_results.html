@@ -21,7 +21,21 @@
                              aria-valuemax="{{ total }}">
                         </div>
                     </div>
-                    <div class="d-grid gap-2">
+                    
+                    <div class="results-details mt-4">
+                        <h3>Question Details</h3>
+                        {% for result in results %}
+                        <div class="result-item mb-3 p-3 {% if result.is_correct %}bg-light{% else %}bg-danger text-white{% endif %}">
+                            <h5>Question {{ result.question_number }}: {{ result.question }}</h5>
+                            <p><strong>Your Answer:</strong> {{ result.user_answer }}</p>
+                            {% if not result.is_correct %}
+                            <p><strong>Correct Answer:</strong> {{ result.correct_answer }}</p>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="d-grid gap-2 mt-4">
                         <a href="{{ url_for('quiz', question_number=1) }}" class="btn btn-primary">Try Again</a>
                         <a href="{{ url_for('home') }}" class="btn btn-outline-secondary">Back to Home</a>
                     </div>

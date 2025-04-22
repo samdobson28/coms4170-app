@@ -161,7 +161,7 @@ function showQuestion(questionNumber) {
         imageContainer.appendChild(grid);
         answerContainer.appendChild(imageContainer);
     } else if (question.type === 'multiple_choice') {
-        question.options.forEach(option => {
+        question.options.forEach((option, index) => {
             const div = document.createElement('div');
             div.className = 'form-check mb-2';
             
@@ -169,16 +169,16 @@ function showQuestion(questionNumber) {
             input.type = 'radio';
             input.className = 'form-check-input';
             input.name = 'answer';
-            input.value = option;
-            input.id = `option-${option}`;
+            input.value = index;
+            input.id = `option-${index}`;
             
-            if (answers[questionNumber] === option) {
+            if (answers[questionNumber] === index.toString()) {
                 input.checked = true;
             }
             
             const label = document.createElement('label');
             label.className = 'form-check-label';
-            label.htmlFor = `option-${option}`;
+            label.htmlFor = `option-${index}`;
             label.textContent = option;
             
             div.appendChild(input);
@@ -186,7 +186,7 @@ function showQuestion(questionNumber) {
             answerContainer.appendChild(div);
             
             input.addEventListener('change', () => {
-                answers[questionNumber] = option;
+                answers[questionNumber] = index.toString();
                 document.querySelector('.progress-dot.current').classList.add('answered');
             });
         });
@@ -292,8 +292,12 @@ document.getElementById('nextBtn').addEventListener('click', () => {
         // Submit answers
         const finalAnswers = {};
         for (let i = 1; i <= quizData.length; i++) {
-            finalAnswers[i] = answers[i] || null; // Mark skipped questions as null
+            if (answers[i]) {
+                finalAnswers[i] = answers[i];
+            }
         }
+        
+        console.log('Submitting answers:', finalAnswers);
         
         fetch('/submit_quiz', {
             method: 'POST',
@@ -301,15 +305,27 @@ document.getElementById('nextBtn').addEventListener('click', () => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(finalAnswers)
-        }).then(response => response.json())
-          .then(data => {
-              // Redirect to results page with score
-              window.location.href = `/quiz/results?score=${data.score}&total=${quizData.length}`;
-          })
-          .catch(error => {
-              console.error('Error submitting quiz:', error);
-              alert('There was an error submitting your quiz. Please try again.');
-          });
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(err => {
+                    throw new Error(err.error || 'Network response was not ok');
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.error) {
+                throw new Error(data.error);
+            }
+            // Encode results for URL
+            const resultsParam = encodeURIComponent(JSON.stringify(data.results));
+            window.location.href = `/quiz/results?score=${data.score}&total=${data.total}&results=${resultsParam}`;
+        })
+        .catch(error => {
+            console.error('Error submitting quiz:', error);
+            alert('Error: ' + error.message);
+        });
     }
 });
 

@@ -198,9 +198,105 @@ def guidebook():
 
 @app.route('/quiz/results')
 def quiz_results():
-    score = request.args.get('score', 0)
-    total = request.args.get('total', 0)
-    return render_template('quiz_results.html', score=score, total=total)
+    try:
+        score = int(request.args.get('score', 0))
+        total = int(request.args.get('total', 0))
+        results = request.args.get('results', '[]')
+        results = json.loads(results)
+        return render_template('quiz_results.html', score=score, total=total, results=results)
+    except (ValueError, TypeError, json.JSONDecodeError):
+        return render_template('quiz_results.html', score=0, total=0, results=[])
+
+@app.route('/submit_quiz', methods=['POST'])
+def submit_quiz():
+    try:
+        data = request.get_json()
+        if data is None:  # Allow empty submissions
+            data = {}
+            
+        app.logger.info(f"Received quiz submission data: {data}")
+        score = 0
+        total = len(QUIZ_DATA['questions'])
+        results = []
+        
+        for i in range(1, total + 1):
+            question = QUIZ_DATA['questions'][i - 1]
+            answer = data.get(str(i))
+            is_correct = False
+            user_answer = answer if answer is not None else "Skipped"
+            correct_answer = None
+            
+            if answer is not None:  # Only check if question was answered
+                if question['type'] == 'image_match':
+                    is_correct = True
+                    for image, correct_label in question['correct_matches'].items():
+                        if not answer or image not in answer or answer[image] != correct_label:
+                            is_correct = False
+                            break
+                    correct_answer = question['correct_matches']
+                            
+                elif question['type'] == 'multiple_choice':
+                    # Convert both to strings for comparison
+                    is_correct = str(answer) == str(question['correct_answer'])
+                    # Store the actual option text for display
+                    if question.get('options'):
+                        user_answer = question['options'][int(answer)]
+                        correct_answer = question['options'][question['correct_answer']]
+                    else:
+                        correct_answer = question['correct_answer']
+                            
+                elif question['type'] == 'true_false':
+                    is_correct = str(answer).lower() == str(question['correct_answer']).lower()
+                    correct_answer = "True" if question['correct_answer'] else "False"
+                    
+                elif question['type'] == 'translation':
+                    is_correct = answer.lower().strip() == question['correct_answer'].lower().strip()
+                    correct_answer = question['correct_answer']
+                    
+                elif question['type'] == 'multiple_select':
+                    is_correct = set(map(str, answer)) == set(map(str, question['correct_answers']))
+                    if question.get('options'):
+                        user_answer = [question['options'][int(idx)] for idx in answer]
+                        correct_answer = [question['options'][idx] for idx in question['correct_answers']]
+                    else:
+                        correct_answer = question['correct_answers']
+                else:
+                    # For skipped questions, get the correct answer for display
+                    if question['type'] == 'multiple_choice' and question.get('options'):
+                        correct_answer = question['options'][question['correct_answer']]
+                    elif question['type'] == 'true_false':
+                        correct_answer = "True" if question['correct_answer'] else "False"
+                    elif question['type'] == 'translation':
+                        correct_answer = question['correct_answer']
+                    elif question['type'] == 'multiple_select' and question.get('options'):
+                        correct_answer = [question['options'][idx] for idx in question['correct_answers']]
+                    elif question['type'] == 'image_match':
+                        correct_answer = question['correct_matches']
+                    else:
+                        correct_answer = question.get('correct_answer') or question.get('correct_matches') or question.get('correct_answers')
+            
+            if is_correct:
+                score += 1
+                
+            results.append({
+                'question_number': i,
+                'question': question['question'],
+                'user_answer': user_answer,
+                'correct_answer': correct_answer,
+                'is_correct': is_correct,
+                'type': question['type']
+            })
+        
+        app.logger.info(f"Quiz submission processed successfully. Score: {score}/{total}")
+        return jsonify({
+            'score': score,
+            'total': total,
+            'results': results
+        })
+        
+    except Exception as e:
+        app.logger.error(f"Error processing quiz submission: {str(e)}")
+        return jsonify({'error': str(e)}), 500
 
 @app.errorhandler(404)
 def page_not_found(e):

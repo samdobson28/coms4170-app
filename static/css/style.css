@@ -25,6 +25,7 @@ body {
     background-color: var(--primary-red);
     padding: 1rem 0;
     margin-bottom: 2rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .nav-list {
@@ -34,19 +35,33 @@ body {
     display: flex;
     justify-content: flex-start;
     gap: 2rem;
+    align-items: center;
 }
 
 .nav-list li a {
     color: var(--text-light);
     text-decoration: none;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     font-weight: 500;
     padding: 0.5rem 1rem;
+    transition: all 0.3s ease;
+    border-radius: 4px;
 }
 
 .nav-list li a:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
+    background-color: rgba(255, 255, 255, 0.15);
+    transform: translateY(-1px);
+}
+
+.nav-list li a.btn-outline-primary {
+    border: 2px solid var(--text-light);
+    color: var(--text-light);
+    padding: 0.5rem 1.5rem;
+}
+
+.nav-list li a.btn-outline-primary:hover {
+    background-color: var(--text-light);
+    color: var(--primary-red);
 }
 
 /* Main Content */
@@ -168,12 +183,18 @@ body {
     display: inline-block;
     padding: 0.75rem 1.5rem;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     font-size: 1rem;
     font-weight: 500;
     text-decoration: none;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .btn-primary {
@@ -186,12 +207,23 @@ body {
 }
 
 .btn-secondary {
-    background-color: #666;
+    background-color: var(--secondary-color);
     color: var(--text-light);
 }
 
 .btn-secondary:hover {
-    background-color: #555;
+    background-color: #5a6268;
+}
+
+.btn-outline-primary {
+    background-color: transparent;
+    border: 2px solid var(--primary-green);
+    color: var(--primary-green);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary-green);
+    color: var(--text-light);
 }
 
 /* Utilities */
@@ -206,25 +238,33 @@ body {
 .card {
     border: none;
     border-radius: 12px;
-    box-shadow: var(--card-shadow);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     margin-bottom: 2rem;
     background: white;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
 }
 
 .card-header {
     background-color: white;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
     padding: 1.5rem;
     border-radius: 12px 12px 0 0 !important;
+    font-weight: 600;
 }
 
 .card-body {
     padding: 2rem;
+    line-height: 1.6;
 }
 
 .card-footer {
     background-color: white;
-    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
     padding: 1.5rem;
     border-radius: 0 0 12px 12px !important;
 }

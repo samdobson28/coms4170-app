@@ -12,23 +12,23 @@
         <div class="filter-section">
             <h4>Filter by Type</h4>
             <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="panaderia" id="panaderiaFilter" checked>
+                <input class="form-check-input" type="checkbox" value="panaderia" id="panaderiaFilter">
                 <label class="form-check-label" for="panaderiaFilter">Panaderias</label>
             </div>
             <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="fine-dining" id="fineDiningFilter" checked>
+                <input class="form-check-input" type="checkbox" value="fine-dining" id="fineDiningFilter">
                 <label class="form-check-label" for="fineDiningFilter">Fine Dining</label>
             </div>
             <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="taqueria" id="taqueriaFilter" checked>
+                <input class="form-check-input" type="checkbox" value="taqueria" id="taqueriaFilter">
                 <label class="form-check-label" for="taqueriaFilter">Taquerias</label>
             </div>
             <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="grocery" id="groceryFilter" checked>
+                <input class="form-check-input" type="checkbox" value="grocery" id="groceryFilter">
                 <label class="form-check-label" for="groceryFilter">Groceries</label>
             </div>
             <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="other" id="otherFilter" checked>
+                <input class="form-check-input" type="checkbox" value="other" id="otherFilter">
                 <label class="form-check-label" for="otherFilter">Other</label>
             </div>
         </div>
@@ -75,26 +75,28 @@
 
 {% block extra_js %}
 <script>
-    const mapLinks = {
-        "panaderia": "https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d96694.61767120536!2d-74.0193!3d40.7684!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1smexican%20bakeries%20nyc!5e0!3m2!1sen!2sus!4v1745361999999!5m2!1sen!2sus",
-        "fine-dining": "https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d96694.61767120536!2d-74.0193!3d40.7684!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1sfine%20dining%20mexican%20restaurants%20nyc!5e0!3m2!1sen!2sus!4v1745361017279!5m2!1sen!2sus",
-        "taqueria": "https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d96694.61767120536!2d-74.0000!3d40.7150!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1staquerias%20nyc!5e0!3m2!1sen!2sus!4v1745362022222!5m2!1sen!2sus",
-        "grocery": "https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d96694.61767120536!2d-73.9851!3d40.7488!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1smexican%20grocery%20stores%20nyc!5e0!3m2!1sen!2sus!4v1745362044444!5m2!1sen!2sus",
-        "other": "https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d96694.61767120536!2d-74.0059!3d40.7128!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1sunique%20mexican%20spots%20nyc!5e0!3m2!1sen!2sus!4v1745362077777!5m2!1sen!2sus"
+    const mapTerms = {
+        "panaderia": "mexican bakeries",
+        "fine-dining": "fine dining mexican restaurants",
+        "taqueria": "taquerias",
+        "grocery": "mexican grocery stores",
+        "other": "unique mexican food spots"
     };
 
     function updateMap() {
         const checked = Array.from(document.querySelectorAll('.form-check-input'))
             .filter(cb => cb.checked)
-            .map(cb => cb.value);
+            .map(cb => mapTerms[cb.value]);
 
         const iframe = document.getElementById('mapIframe');
 
-        if (checked.length === 1 && mapLinks[checked[0]]) {
-            iframe.src = mapLinks[checked[0]];
-        } else {
-            // Default map when multiple or none selected
+        if (checked.length === 0) {
+            // Default view (general search)
             iframe.src = "https://www.google.com/maps/embed?pb=!1m12!1m8!1m3!1d88646.04090980714!2d-74.0025!3d40.7859!3m2!1i1024!2i768!4f13.1!2m1!1smexican%20restaurants%20nyc!5e0!3m2!1sen!2sus!4v1745360586800!5m2!1sen!2sus";
+        } else {
+            const combinedQuery = encodeURIComponent(checked.join(" + ") + " NYC");
+            const embedUrl = `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d24127.285!2d-74.006!3d40.7128!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2z!5e0!3m2!1sen!2sus!4v1745361999999&q=${combinedQuery}`;
+            iframe.src = `https://www.google.com/maps?q=${combinedQuery}&output=embed`;
         }
     }
 
@@ -102,7 +104,6 @@
         cb.addEventListener('change', updateMap);
     });
 
-    // Run on page load to set initial map
-    updateMap();
+    updateMap(); // Run once on load
 </script>
 {% endblock %} 

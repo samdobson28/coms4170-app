@@ -4,37 +4,37 @@
             "id": "chile-relleno",
             "name": "Chile Relleno",
             "description": "The chile relleno (Spanish pronunciation: [ˈtʃile reˈʝeno], literally \"stuffed chile\")[1] is a dish in Mexican cuisine that originated in the city of Puebla. In 1858, it was described as a \"green chile pepper stuffed with minced meat and coated with eggs\".[1]\n\nThe most common pepper used is Puebla's poblano pepper, though New Mexico chile, pasilla, or even jalapeño peppers are popular as well. It is typically stuffed with melted cheese, such as queso Chihuahua or queso Oaxaca or with picadillo meat made of diced pork, raisins and nuts, seasoned with canella; covered in an egg white batter, simply corn masa flour and fried, or without any batter at all.[2][3] Although it is often served in a tomato sauce, the sauces can vary.",
-            "image": "images/chile-relleno.jpg"
+            "image": "images/chile-relleno.png"
         },
         {
             "id": "conchas",
             "name": "Conchas",
             "description": "Concha (Spanish, 'shell'), plural conchas, is a traditional Mexican sweet bread (pan dulce) with similar consistency to a brioche.\n\n[1] Conchas get their name from their round shape and their striped, seashell-like appearance. A concha consists of two parts, a sweetened bread roll, and a crunchy topping (composed of flour, butter, and sugar).[2] The most common crunchy topping flavors being chocolate, vanilla, and strawberry.[3] Conchas are commonly found throughout Mexico and Guatemala (and its diaspora) in panaderias. They can now also be found in grocery stores and bakeries across the United States.[4]",
-            "image": "images/conchas.jpg"
+            "image": "images/conchas.png"
         },
         {
             "id": "chicharrones",
             "name": "Chicharrones",
             "description": "Besides chicharrón made from pig skin and fat, snack-food companies Barcel and Sabritas have commercialized vegetarian versions (primarily made of puffed cornmeal batter) with chile and lemon flavorings since the 1980s.\n\nChicharrón de cerdo are also distributed by many salty snack companies in Mexico, sold in supermarkets, and made and sold by markets, tianguis, and street vendors. Tacos de chicharrón (chicharrones wrapped in a tortilla with some avocado, creamy cheese (such as queso panela, queso blanco, or queso fresco), and sometimes, hot sauce) are popular as snacks, appetizers, or a main dish. Popular dishes that make use of chicharrón as a main ingredient include chicharrón con salsa verde and gorditas de chicharrón. The North Mexico version is made with fried pork belly (and has more meat, compared to the South Mexico version), and is more based on Spanish torreznos.",
-            "image": "images/chicharrones.jpg"
+            "image": "images/chicharrones.png"
         },
         {
             "id": "mole",
             "name": "Mole (de pollo)",
             "description": "Mole (Spanish: [ˈmole]; from Nahuatl mōlli, Nahuatl: [ˈmoːlːi]), meaning 'sauce', is a traditional sauce and marinade originally used in Mexican cuisine. In contemporary Mexico the term is used for a number of sauces, some quite dissimilar, including mole amarillo or amarillito (yellow mole), mole chichilo, mole colorado or coloradito (reddish mole), mole manchamantel or manchamanteles (tablecloth stainer), mole negro (black mole), mole rojo (red mole), mole verde (green mole), mole poblano, mole almendrado (mole with almond), mole michoacano, mole prieto, mole ranchero, mole tamaulipeco, mole xiqueno, pipián (mole with squash seed), mole rosa (pink mole), mole blanco (white mole), mole estofado, tezmole, clemole, mole de olla, chimole, guacamole (mole with avocado) and huaxmole (mole with huaje).",
-            "image": "images/mole.jpg"
+            "image": "images/mole.png"
         },
         {
             "id": "aguas-frescas",
             "name": "Aguas Frescas",
             "description": "Aguas frescas[1][2] (English: cool waters, lit. 'fresh waters') or frescos or aguas, are light non-alcoholic beverages made from one or more fruits, cereals, flowers, or seeds blended with sugar and water. They are popular in many Latin American countries, as well as parts of the United States such as the Southwest and heavy-Latino population cities, such as Los Angeles. Some of the more common varieties include tamarindo, jamaica, and horchata.",
-            "image": "images/aguas-frescas.jpg"
+            "image": "images/aguas-frescas.png"
         },
         {
             "id": "pozole",
             "name": "Pozole",
             "description": "Pozole (Spanish pronunciation: [po'sole]; from Nahuatl languages: pozolli, meaning cacahuazintle, a variety of corn or maize) is a traditional soup or stew from Mexican cuisine. It is made from hominy with meat (typically chicken or pork), and can be seasoned and garnished with shredded lettuce or cabbage, chili peppers, onion, garlic, radishes, avocado, salsa or limes. Known in Mesoamerica since the pre-Columbian era, the stew is common across Mexico and neighboring countries, served both as a day-to-day meal and as a festive dish.",
-            "image": "images/pozole.jpg"
+            "image": "images/pozole.png"
         }
     ],
     "phrases": [

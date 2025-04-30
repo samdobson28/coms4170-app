@@ -121,7 +121,7 @@ function showQuestion(questionNumber) {
             col.className = 'col-md-4 mb-4';
             
             const img = document.createElement('img');
-            img.src = "{{ url_for('static', filename='images/') }}" + image + '.jpg';
+            img.src = "{{ url_for('static', filename='images/') }}" + image + '.png';
             img.alt = `Image ${index + 1}`;
             img.className = 'img-fluid mb-2';
             col.appendChild(img);

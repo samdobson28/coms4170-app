@@ -35,7 +35,7 @@ class SavedItem(db.Model):
     timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
 # Load data
-with open('static/data/lessons.json') as f:
+with open('static/data/lessons.json', encoding='utf-8') as f:
     data = json.load(f)
     foods = data['foods']
     phrases = data['phrases']

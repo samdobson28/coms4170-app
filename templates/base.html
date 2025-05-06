@@ -7,24 +7,31 @@
     <!-- Common CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand+SC&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     {% block extra_css %}{% endblock %}
 </head>
 <body>
-    <nav class="main-nav">
+    <nav class="navbar navbar-expand-lg" style="background-color: #dc3545;">
         <div class="container">
-            <ul class="nav-list">
-                <li><a href="{{ url_for('home') }}">HOME</a></li>
-                <li><a href="{{ url_for('learn', section='map') }}">MAP</a></li>
-                <li><a href="{{ url_for('learn', section='culture') }}">CULTURE</a></li>
-                <li><a href="{{ url_for('learn', section='language') }}">LANGUAGE</a></li>
-                <li><a href="{{ url_for('quiz') }}">QUIZ</a></li>
-                <li><a href="{{ url_for('guidebook') }}" class="btn btn-outline-primary"><i class="bi bi-book"></i> My Guidebook</a></li>
-            </ul>
+            <a class="navbar-brand text-white" href="{{ url_for('home') }}" style="font-family: 'Patrick Hand SC', cursive;">Mexican Food in NYC</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link text-white" href="{{ url_for('home') }}">HOME</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" href="{{ url_for('learn', section='map') }}">MAP</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" href="{{ url_for('learn', section='culture') }}">CULTURE</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" href="{{ url_for('learn', section='language') }}">LANGUAGE</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" href="{{ url_for('quiz') }}">QUIZ</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" href="{{ url_for('guidebook') }}"><i class="bi bi-book"></i> My Guidebook</a></li>
+                </ul>
+            </div>
         </div>
     </nav>
 
-    <main class="container">
+    <main class="container-fluid p-0">
         {% block content %}{% endblock %}
     </main>
 

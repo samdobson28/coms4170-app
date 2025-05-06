@@ -4,6 +4,18 @@
 
 {% block extra_css %}
 <style>
+.quiz-section h1 {
+    font-family: 'Patrick Hand SC', cursive;
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+}
+
+.quiz-section .lead {
+    font-family: 'Patrick Hand SC', cursive;
+    font-size: 1.25rem;
+    margin-bottom: 2rem;
+}
+
 .progress-container {
     display: flex;
     justify-content: center;
@@ -20,7 +32,7 @@
 }
 
 .progress-dot.current {
-    background-color: #007bff;
+    background-color: #dc3545;
 }
 
 .progress-dot.answered {
@@ -33,11 +45,11 @@
 }
 
 .image-match-container img {
-    max-width: 100%;
-    max-height: 300px;
-    object-fit: contain;
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
     margin-bottom: 1rem;
-    border-radius: 8px;
+    border-radius: 20px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
@@ -49,6 +61,50 @@
 
 .quiz-navigation button {
     min-width: 100px;
+    font-family: 'Patrick Hand SC', cursive;
+}
+
+.question-text {
+    font-family: 'Patrick Hand SC', cursive;
+    font-size: 1.5rem;
+    color: #2c3e50;
+}
+
+.form-check-label {
+    font-family: 'Patrick Hand SC', cursive;
+    font-size: 1.1rem;
+}
+
+.btn-primary {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.btn-primary:hover {
+    background-color: #bb2d3b;
+    border-color: #bb2d3b;
+}
+
+.btn-outline-primary {
+    color: #dc3545;
+    border-color: #dc3545;
+}
+
+.btn-outline-primary:hover {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.form-control {
+    font-family: 'Patrick Hand SC', cursive;
+    font-size: 1.1rem;
+    border-radius: 10px;
+}
+
+.form-select {
+    font-family: 'Patrick Hand SC', cursive;
+    font-size: 1.1rem;
+    border-radius: 10px;
 }
 </style>
 {% endblock %}
@@ -74,6 +130,7 @@
 
         <div class="quiz-navigation">
             <button class="btn btn-secondary" id="prevBtn" disabled>Previous</button>
+            <a href="{{ url_for('learn', section='language') }}" class="btn btn-outline-primary" id="reviewBtn">Review Phrases</a>
             <button class="btn btn-primary" id="nextBtn">Next</button>
         </div>
     </div>
@@ -86,10 +143,44 @@ const quizData = {{ quiz_data.questions|tojson|safe }};
 let currentQuestion = {{ current_question }};
 let answers = {};
 
+// Load saved progress from localStorage
+function loadProgress() {
+    const savedAnswers = localStorage.getItem('quizAnswers');
+    const savedQuestion = localStorage.getItem('currentQuestion');
+    if (savedAnswers) {
+        answers = JSON.parse(savedAnswers);
+    }
+    if (savedQuestion) {
+        currentQuestion = parseInt(savedQuestion);
+    }
+}
+
+// Save progress to localStorage
+function saveProgress() {
+    localStorage.setItem('quizAnswers', JSON.stringify(answers));
+    localStorage.setItem('currentQuestion', currentQuestion.toString());
+}
+
+// Clear progress from localStorage
+function clearProgress() {
+    localStorage.removeItem('quizAnswers');
+    localStorage.removeItem('currentQuestion');
+}
+
 function showQuestion(questionNumber) {
     const question = quizData[questionNumber - 1];
     const questionContainer = document.querySelector('.question-container');
     const answerContainer = document.querySelector('.answer-container');
+    const reviewBtn = document.getElementById('reviewBtn');
+    
+    // Update review button based on question type
+    if (question.type === 'translation') {
+        reviewBtn.href = "{{ url_for('learn', section='language') }}";
+        reviewBtn.textContent = 'Review Phrases';
+    } else {
+        reviewBtn.href = "{{ url_for('learn', section='culture') }}";
+        reviewBtn.textContent = 'Review Food';
+    }
     
     // Update progress dots
     document.querySelectorAll('.progress-dot').forEach((dot, index) => {
@@ -127,7 +218,7 @@ function showQuestion(questionNumber) {
             col.appendChild(img);
             
             const select = document.createElement('select');
-            select.className = 'form-control';
+            select.className = 'form-select';
             select.id = `answer-${index}`;
             
             const defaultOption = document.createElement('option');
@@ -152,6 +243,7 @@ function showQuestion(questionNumber) {
                 }
                 answers[questionNumber][index] = select.value;
                 document.querySelector('.progress-dot.current').classList.add('answered');
+                saveProgress();
             });
             
             col.appendChild(select);
@@ -188,6 +280,7 @@ function showQuestion(questionNumber) {
             input.addEventListener('change', () => {
                 answers[questionNumber] = index.toString();
                 document.querySelector('.progress-dot.current').classList.add('answered');
+                saveProgress();
             });
         });
     } else if (question.type === 'true_false') {
@@ -209,6 +302,7 @@ function showQuestion(questionNumber) {
                 button.classList.add('btn-primary');
                 answers[questionNumber] = option;
                 document.querySelector('.progress-dot.current').classList.add('answered');
+                saveProgress();
             });
             
             div.appendChild(button);
@@ -229,6 +323,7 @@ function showQuestion(questionNumber) {
         input.addEventListener('input', () => {
             answers[questionNumber] = input.value;
             document.querySelector('.progress-dot.current').classList.add('answered');
+            saveProgress();
         });
         
         answerContainer.appendChild(input);
@@ -267,20 +362,35 @@ function showQuestion(questionNumber) {
                     answers[questionNumber] = answers[questionNumber].filter(i => i !== index);
                 }
                 document.querySelector('.progress-dot.current').classList.add('answered');
+                saveProgress();
             });
         });
     }
-
-    // Update navigation buttons
-    document.getElementById('prevBtn').disabled = questionNumber === 1;
-    document.getElementById('nextBtn').textContent = questionNumber === quizData.length ? 'Finish' : 'Next';
 }
 
-// Navigation
+function updateNavigation() {
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    
+    prevBtn.disabled = currentQuestion === 1;
+    
+    if (currentQuestion === quizData.length) {
+        nextBtn.textContent = 'Submit';
+        nextBtn.classList.remove('btn-primary');
+        nextBtn.classList.add('btn-success');
+    } else {
+        nextBtn.textContent = 'Next';
+        nextBtn.classList.remove('btn-success');
+        nextBtn.classList.add('btn-primary');
+    }
+}
+
 document.getElementById('prevBtn').addEventListener('click', () => {
     if (currentQuestion > 1) {
         currentQuestion--;
         showQuestion(currentQuestion);
+        updateNavigation();
+        saveProgress();
     }
 });
 
@@ -288,50 +398,46 @@ document.getElementById('nextBtn').addEventListener('click', () => {
     if (currentQuestion < quizData.length) {
         currentQuestion++;
         showQuestion(currentQuestion);
+        updateNavigation();
+        saveProgress();
     } else {
-        // Submit answers
-        const finalAnswers = {};
-        for (let i = 1; i <= quizData.length; i++) {
-            if (answers[i]) {
-                finalAnswers[i] = answers[i];
-            }
-        }
-        
-        console.log('Submitting answers:', finalAnswers);
-        
+        // Submit quiz
         fetch('/submit_quiz', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
+                'Content-Type': 'application/json'
             },
-            body: JSON.stringify(finalAnswers)
+            body: JSON.stringify(answers)
         })
         .then(response => {
             if (!response.ok) {
-                return response.json().then(err => {
-                    throw new Error(err.error || 'Network response was not ok');
-                });
+                throw new Error('Network response was not ok');
             }
             return response.json();
         })
         .then(data => {
-            if (data.error) {
-                throw new Error(data.error);
-            }
-            // Encode results for URL
-            const resultsParam = encodeURIComponent(JSON.stringify(data.results));
-            window.location.href = `/quiz/results?score=${data.score}&total=${data.total}&results=${resultsParam}`;
+            // Clear progress after successful submission
+            clearProgress();
+            // Redirect to results page with score and results
+            const resultsParam = encodeURIComponent(JSON.stringify(data.results || []));
+            window.location.href = `/quiz/results?score=${data.score || 0}&total=${data.total || 0}&results=${resultsParam}`;
         })
         .catch(error => {
             console.error('Error submitting quiz:', error);
-            alert('Error: ' + error.message);
+            alert('There was an error submitting your quiz. Please try again.');
         });
     }
 });
 
-// Initialize first question
-document.addEventListener('DOMContentLoaded', () => {
-    showQuestion(currentQuestion);
+// Add event listener for review button
+document.getElementById('reviewBtn').addEventListener('click', function(e) {
+    // Save progress before navigating away
+    saveProgress();
 });
+
+// Initialize
+loadProgress();
+showQuestion(currentQuestion);
+updateNavigation();
 </script>
 {% endblock %} 

@@ -11,8 +11,13 @@
         <h2><i class="bi bi-translate"></i> Useful Phrases</h2>
         <div class="list-group">
             {% for phrase in phrases %}
-            <div class="list-group-item">
-                <strong>{{ phrase.spanish }}</strong> - {{ phrase.english }}
+            <div class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                    <strong>{{ phrase.spanish }}</strong> - {{ phrase.english }}
+                </div>
+                <button class="btn btn-outline-danger btn-sm remove-item" data-type="phrase" data-id="{{ phrase.spanish }}">
+                    <i class="bi bi-trash"></i>
+                </button>
             </div>
             {% endfor %}
         </div>
@@ -27,8 +32,13 @@
                 <div class="card h-100">
                     <img src="{{ url_for('static', filename=food.image) }}" class="card-img-top" alt="{{ food.name }}">
                     <div class="card-body">
-                        <h5 class="card-title">{{ food.name }}</h5>
-                        <p class="card-text">{{ food.description[:200] }}...</p>
+                        <div class="d-flex justify-content-between align-items-start">
+                            <h5 class="card-title">{{ food.name }}</h5>
+                            <button class="btn btn-outline-danger btn-sm remove-item" data-type="food" data-id="{{ food.id }}">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                        <p class="card-text">{{ food.description|safe }}</p>
                     </div>
                 </div>
             </div>
@@ -42,12 +52,19 @@
         <div class="list-group">
             {% for place in places %}
             <div class="list-group-item">
-                <h5>{{ place.name }}</h5>
-                <p class="mb-1">{{ place.description }}</p>
-                <small class="text-muted">
-                    <i class="bi bi-geo-alt"></i> {{ place.address }} |
-                    <i class="bi bi-tag"></i> {{ place.price_range }}
-                </small>
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h5>{{ place.name }}</h5>
+                        <p class="mb-1">{{ place.description }}</p>
+                        <small class="text-muted">
+                            <i class="bi bi-geo-alt"></i> {{ place.address }} |
+                            <i class="bi bi-tag"></i> {{ place.price_range }}
+                        </small>
+                    </div>
+                    <button class="btn btn-outline-danger btn-sm remove-item" data-type="place" data-id="{{ place.name }}">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
             </div>
             {% endfor %}
         </div>
@@ -60,4 +77,35 @@
         </a>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.querySelectorAll('.remove-item').forEach(button => {
+    button.addEventListener('click', function() {
+        const type = this.dataset.type;
+        const id = this.dataset.id;
+        
+        fetch('/remove_item', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                type: type,
+                id: id
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Remove the item from the DOM
+                const item = this.closest('.list-group-item, .col-md-4');
+                item.remove();
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    });
+});
+</script>
 {% endblock %} 

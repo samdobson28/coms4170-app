@@ -4,6 +4,69 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+<style>
+.filter-section {
+    background-color: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.filter-section h4 {
+    font-family: 'Patrick Hand SC', cursive;
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    color: #2c3e50;
+}
+
+.form-check-label {
+    font-family: 'Patrick Hand SC', cursive;
+    font-size: 1.1rem;
+    margin-left: 0.5rem;
+}
+
+.modal-title {
+    font-family: 'Patrick Hand SC', cursive;
+    font-size: 1.5rem;
+}
+
+.modal-content {
+    border-radius: 20px;
+}
+
+.modal-body h3 {
+    font-family: 'Patrick Hand SC', cursive;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.modal-body h5 {
+    font-family: 'Patrick Hand SC', cursive;
+    font-size: 1.25rem;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.btn-primary {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    font-family: 'Patrick Hand SC', cursive;
+}
+
+.btn-primary:hover {
+    background-color: #bb2d3b;
+    border-color: #bb2d3b;
+}
+
+.btn-secondary {
+    font-family: 'Patrick Hand SC', cursive;
+}
+
+#mapIframe {
+    border-radius: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+</style>
 {% endblock %}
 
 {% block content %}

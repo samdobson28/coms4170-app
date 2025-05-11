@@ -76,6 +76,7 @@
 .btn-primary {
     background-color: #dc3545;
     border-color: #dc3545;
+    width: 100px;
 }
 
 .btn-primary:hover {
@@ -92,6 +93,14 @@
     background-color: #dc3545;
     border-color: #dc3545;
 }
+
+.navigation-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2rem;
+    font-family: 'Patrick Hand SC', cursive;
+}
+
 </style>
 {% endblock %}
 
@@ -148,6 +157,10 @@
             </div>
         </div>
         {% endfor %}
+    </div>
+    <div class="navigation-buttons">
+        <a href="{{ url_for('learn', section='home') }}" class="btn btn-secondary">Previous</a>
+        <a href="{{ url_for('learn', section='language') }}" class="btn btn-primary">Next</a>
     </div>
 </div>
 {% endblock %}

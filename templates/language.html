@@ -53,6 +53,8 @@
 
 .text-muted {
     font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
 }
 
 .mt-4 {
@@ -126,14 +128,15 @@
         {% for phrase in phrases %}
         <div class="list-group-item d-flex justify-content-between align-items-center">
             <div>
-                <strong>{{ phrase.spanish }}</strong>
-                <img src="{{ url_for('static', filename='images/audio_icon.png') }}" 
-                     class="audio-icon" 
-                     onclick="playAudio('{{ phrase.spanish }}')"
-                     alt="Play audio">
-                - {{ phrase.english }}
+                <strong>{{ phrase.spanish }}</strong> - {{ phrase.english }}
                 <br>
-                <small class="text-muted">Pronunciation: {{ phrase.pronunciation }}</small>
+                <small class="text-muted">
+                    Pronunciation: {{ phrase.pronunciation }}
+                    <img src="{{ url_for('static', filename='images/audio_icon.png') }}" 
+                         class="audio-icon" 
+                         onclick="playAudio('{{ phrase.spanish }}')"
+                         alt="Play audio">
+                </small>
             </div>
             <button class="btn btn-outline-primary save-phrase" data-phrase-id="{{ phrase.spanish }}">
                 <i class="bi bi-bookmark"></i> Save
@@ -212,7 +215,7 @@ window.onclick = function(event) {
 
 function playAudio(phrase) {
     // Create audio element
-    const audio = new Audio(`/static/audio/${phrase}.m4a`);
+    const audio = new Audio(`/static/audio/${phrase}.mp3`);
     
     // Play the audio
     audio.play().catch(error => {

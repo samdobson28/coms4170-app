@@ -40,25 +40,25 @@
     "phrases": [
         {
             "id": "phrase1",
-            "spanish": "¿Disculpe?",
+            "spanish": "Disculpe",
             "english": "Excuse me?",
             "pronunciation": "dees-KOOL-peh"
         },
         {
             "id": "phrase2",
-            "spanish": "¿Si me da [dish]?",
+            "spanish": "Si me da [dish]",
             "english": "Could I get [dish]?",
             "pronunciation": "see meh dah"
         },
         {
             "id": "phrase3",
-            "spanish": "¿Tiene [dish]?",
+            "spanish": "Tiene [dish]",
             "english": "Do you have [dish]?",
             "pronunciation": "tee-EH-neh"
         },
         {
             "id": "phrase4",
-            "spanish": "Se cuida!",
+            "spanish": "Se cuida",
             "english": "Take care!",
             "pronunciation": "seh kwee-dah"
         },
@@ -70,7 +70,7 @@
         },
         {
             "id": "phrase6",
-            "spanish": "Que tenga una buena noche!",
+            "spanish": "Que tenga una buena noche",
             "english": "Have a good night!",
             "pronunciation": "keh TEHN-gah OO-nah BWEH-nah NO-cheh"
         }

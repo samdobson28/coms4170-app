@@ -104,6 +104,18 @@
 .dialog-buttons .btn {
     margin: 5px;
 }
+
+.audio-icon {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    margin-left: 10px;
+    vertical-align: middle;
+}
+
+.audio-icon:hover {
+    opacity: 0.8;
+}
 </style>
 {% endblock %}
 
@@ -114,7 +126,12 @@
         {% for phrase in phrases %}
         <div class="list-group-item d-flex justify-content-between align-items-center">
             <div>
-                <strong>{{ phrase.spanish }}</strong> - {{ phrase.english }}
+                <strong>{{ phrase.spanish }}</strong>
+                <img src="{{ url_for('static', filename='images/audio_icon.png') }}" 
+                     class="audio-icon" 
+                     onclick="playAudio('{{ phrase.spanish }}')"
+                     alt="Play audio">
+                - {{ phrase.english }}
                 <br>
                 <small class="text-muted">Pronunciation: {{ phrase.pronunciation }}</small>
             </div>
@@ -191,6 +208,16 @@ window.onclick = function(event) {
     if (event.target === dialog) {
         closeDialog();
     }
+}
+
+function playAudio(phrase) {
+    // Create audio element
+    const audio = new Audio(`/static/audio/${phrase}.m4a`);
+    
+    // Play the audio
+    audio.play().catch(error => {
+        console.error('Error playing audio:', error);
+    });
 }
 </script>
 {% endblock %} 
